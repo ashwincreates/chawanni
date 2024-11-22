@@ -82,6 +82,7 @@ android {
         applicationId "com.chawanni"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        missingDimensionStrategy 'react-native-camera', 'general'
         versionCode 1
         versionName "1.0"
     }
@@ -116,4 +117,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(':react-native-vector-icons')
 }
+
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
