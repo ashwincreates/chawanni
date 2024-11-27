@@ -6,6 +6,8 @@ import Budgets from '../tabs/budgets';
 import {BottomNavigation, FAB} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {CommonActions} from '@react-navigation/native';
+import withProtection from '../components/ProtectedScreen';
+import {forwardRef} from 'react';
 
 const Tab = createBottomTabNavigator();
 
@@ -97,4 +99,4 @@ function HomeScreen() {
   );
 }
 
-export default HomeScreen;
+export default forwardRef((props, _) => withProtection(<HomeScreen {...props} />));

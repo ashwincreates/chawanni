@@ -57,7 +57,7 @@ export default function Budgets() {
                 <View style={{gap: 8}}>
                   <Text variant="titleLarge">{item.name}</Text>
                   {item.limit && <Text style={{color: (item.expense ?? 0) < item.limit.amount ? 'green': 'red'}}>₹{item.expense ?? 0} / {item.limit?.amount}</Text>}
-                  {item.limit && <ProgressBar progress={((item.expense ?? 0)/item.limit.amount)} />}
+                  {item.limit && <ProgressBar progress={((Math.min(item.expense ?? 0, item.limit.amount))/item.limit.amount)} />}
                 </View>
               </Card.Content>
             </Card>

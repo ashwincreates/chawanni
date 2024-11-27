@@ -9,4 +9,6 @@ export type RouteParamList = {
   Payment: {payment: WithId<Payment>} | undefined;
   QR: any;
   UPI: {uri: string};
+  Login: any;
+  Register: any;
 };

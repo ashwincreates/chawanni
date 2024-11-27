@@ -22,4 +22,6 @@ export const getPayments = async () =>
     }))
   });
 
+export const getPaymentCollection = () => paymentCollection
+
 export const getPaymentsById = (budgetId: string) => query(paymentCollection, where('category', '==', doc(getBudgetCollection(), budgetId)))
