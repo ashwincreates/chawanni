@@ -26,7 +26,7 @@ function App(): React.JSX.Element {
           <NavigationContainer>
             <StatusBar backgroundColor={'white'} barStyle="dark-content" />
             <Stack.Navigator
-              initialRouteName="Home"
+              initialRouteName="Login"
               screenOptions={{
                 headerShadowVisible: false,
                 contentStyle: {backgroundColor: 'white'},

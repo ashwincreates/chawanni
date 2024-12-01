@@ -1,15 +1,28 @@
 import {db} from '../../firebase';
 import {collection, doc, getDoc, getDocs} from 'firebase/firestore';
 import {Account} from '../interfaces/models/account';
+import useAuth from '../hooks/useAuth';
 
-const accountCollection = collection(db, 'accounts');
+export const useAccount = () => {
+  const {user} = useAuth()
 
-export const getAccount = (id: string) => doc(accountCollection, id)
+  if (user === null) {
+    throw new Error('You are not logged in');
+  }
+  const accountCollection = collection(db, 'users', user?.uid, 'accounts');
 
-export const getAccounts = () => getDocs(accountCollection).then(
-  result =>
-    result.docs.map(doc => ({
+  const getAccount = async (id: string) => {
+    const accountDoc = await getDoc(doc(accountCollection, id));
+    return {...(accountDoc.data() as Account), id: accountDoc.id};
+  };
+
+  const getAccounts = async () => {
+    const result = await getDocs(accountCollection);
+    return result.docs.map(doc => ({
       ...(doc.data() as Account),
       id: doc.id,
-    })) as WithId<Account>[],
-);
+    })) as WithId<Account>[];
+  };
+
+  return {getAccount, getAccounts, accountCollection};
+};

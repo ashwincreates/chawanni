@@ -21,16 +21,20 @@ import {
 } from 'react-native-paper';
 import {useQueries} from 'react-query';
 import {db} from '../../firebase';
-import {getAccount, getAccounts} from '../api/account';
-import {getBudgets, getCategory} from '../api/category';
 import NavigationOptions from '../components/utils/NavigationOptions';
 import {Payment, PaymentEnum} from '../interfaces/models/payment';
 import {RouteParamList} from '../interfaces/routes';
+import {usePayment} from '../api/payment';
+import useAuth from '../hooks/useAuth';
+import {useCategory} from '../api/category';
+import {useAccount} from '../api/account';
 
 function Payments({route}: {route: RouteProp<RouteParamList, 'Payment'>}) {
   const params = route.params;
   const navigation = useNavigation();
-  const paymentCollection = collection(db, 'payments');
+  const {paymentCollection} = usePayment();
+  const {getBudgets, getBudgetCollection} = useCategory();
+  const {getAccounts, accountCollection} = useAccount();
 
   const [budget, accounts] = useQueries([
     {queryKey: 'budgets', queryFn: () => getBudgets()},
@@ -40,23 +44,29 @@ function Payments({route}: {route: RouteProp<RouteParamList, 'Payment'>}) {
   const EditMode = !!params;
 
   const addPayment = async (payment: Partial<Payment>) => {
-    if (payment.account && payment.category) {
-      const accountRef = getAccount(payment.account.id);
-      const categoryRef = getCategory(payment.category.id);
-      if (!EditMode) {
-        await addDoc(paymentCollection, {
-          ...payment,
-          created_on: serverTimestamp(),
-          account: accountRef,
-          category: categoryRef,
-        });
-      } else {
-        await updateDoc(await doc(paymentCollection, params.payment.id), {
-          ...payment,
-          created_on: serverTimestamp(),
-          account: accountRef,
-          category: categoryRef,
-        });
+    if (payment.account) {
+      const accountRef = doc(accountCollection, payment.account.id);
+      const categoryRef = payment.category
+        ? doc(getBudgetCollection(), payment.category.id)
+        : null;
+      try {
+        if (!EditMode) {
+          await addDoc(paymentCollection, {
+            ...payment,
+            created_on: serverTimestamp(),
+            account: accountRef,
+            category: categoryRef,
+          });
+        } else {
+          await updateDoc(await doc(paymentCollection, params.payment.id), {
+            ...payment,
+            created_on: serverTimestamp(),
+            account: accountRef,
+            category: categoryRef,
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   };

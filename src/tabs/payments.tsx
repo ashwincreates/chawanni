@@ -1,4 +1,4 @@
-import {StyleSheet, FlatList, View} from 'react-native';
+import { FlatList, View} from 'react-native';
 import {Button, Icon, List, Text} from 'react-native-paper';
 import NavigationOptions from '../components/utils/NavigationOptions';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
@@ -6,11 +6,12 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RouteParamList} from '../interfaces/routes';
 import {useQuery} from 'react-query';
 import {Payment, PaymentEnum} from '../interfaces/models/payment';
-import {getPayments} from '../api/payment';
 import {useCallback} from 'react';
 import {format} from 'date-fns';
+import {usePayment} from '../api/payment';
 
 export default function Payments() {
+  const {getPayments} = usePayment();
   const {data, refetch} = useQuery<WithId<Payment>[]>({
     queryKey: 'payments',
     queryFn: () => getPayments(),
@@ -48,7 +49,9 @@ export default function Payments() {
         renderItem={({item}) => {
           return (
             <>
-              <Text style={{paddingHorizontal: 16}}>{format(item, 'dd MMM')}</Text>
+              <Text style={{paddingHorizontal: 16}}>
+                {format(item, 'dd MMM')}
+              </Text>
               <FlatList
                 data={dateGroups?.[item] ?? []}
                 renderItem={({item}) => {

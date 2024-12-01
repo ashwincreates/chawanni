@@ -12,14 +12,14 @@ import {Account} from '../interfaces/models/account';
 import {db} from '../../firebase';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {collection, deleteDoc, doc, getDoc, getDocs} from 'firebase/firestore';
+import {deleteDoc, doc} from 'firebase/firestore';
 import {useCallback, useEffect, useState} from 'react';
 import {useQuery} from 'react-query';
-import {Budget} from '../interfaces/models/budget';
 import {RouteParamList} from '../interfaces/routes';
-import {getAccounts} from '../api/account';
+import {useAccount} from '../api/account';
 
 export default function Accounts() {
+  const {getAccounts} = useAccount();
   const {data, refetch} = useQuery<WithId<Account>[]>({
     queryKey: 'accounts',
     queryFn: () => getAccounts(),

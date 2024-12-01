@@ -5,7 +5,7 @@ function NavigationOptions(props: {options: Partial<{}>}) {
   const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions(props.options);
-  }, []);
+  }, [props.options]);
   return null;
 }
 

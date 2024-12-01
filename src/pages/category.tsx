@@ -13,12 +13,13 @@ import {
 } from 'firebase/firestore';
 import {db} from '../../firebase';
 import NavigationOptions from '../components/utils/NavigationOptions';
-import {addLimit, getBudgetCollection} from '../api/category';
+import {useCategory} from '../api/category';
 
 function Category({route}: {route: RouteProp<RouteParamList, 'Category'>}) {
   const params = route.params;
   const navigation = useNavigation();
-  const budgetCollection = collection(db, 'budgets');
+  const {addLimit, getBudgetCollection} = useCategory();
+  const budgetCollection = getBudgetCollection()
 
   const EditMode = !!params;
 

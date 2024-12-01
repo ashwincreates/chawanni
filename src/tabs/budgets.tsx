@@ -8,12 +8,13 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {useCallback, useEffect} from 'react';
 import {RouteParamList} from '../interfaces/routes';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import { getBudgets } from '../api/category';
+import {useCategory} from '../api/category';
 
 export default function Budgets() {
+  const {getBudgets} = useCategory();
   const {data, refetch} = useQuery<(WithId<Budget> & {expense?: number})[]>({
     queryKey: 'budgets',
-    queryFn: () => getBudgets()
+    queryFn: () => getBudgets(),
   });
 
   const revisit = useCallback(() => {
@@ -56,8 +57,25 @@ export default function Budgets() {
                 <Text style={{fontSize: 36}}>{item.icon}</Text>
                 <View style={{gap: 8}}>
                   <Text variant="titleLarge">{item.name}</Text>
-                  {item.limit && <Text style={{color: (item.expense ?? 0) < item.limit.amount ? 'green': 'red'}}>₹{item.expense ?? 0} / {item.limit?.amount}</Text>}
-                  {item.limit && <ProgressBar progress={((Math.min(item.expense ?? 0, item.limit.amount))/item.limit.amount)} />}
+                  {item.limit && (
+                    <Text
+                      style={{
+                        color:
+                          (item.expense ?? 0) < item.limit.amount
+                            ? 'green'
+                            : 'red',
+                      }}>
+                      ₹{item.expense ?? 0} / {item.limit?.amount}
+                    </Text>
+                  )}
+                  {item.limit && (
+                    <ProgressBar
+                      progress={
+                        parseFloat((Math.min(item.expense ?? 0, item.limit.amount) /
+                        item.limit.amount).toPrecision(2))
+                      }
+                    />
+                  )}
                 </View>
               </Card.Content>
             </Card>

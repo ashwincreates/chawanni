@@ -1,7 +1,4 @@
-import {
-  RouteProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
 import {View} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import {RouteParamList} from '../interfaces/routes';
@@ -9,12 +6,13 @@ import {Formik} from 'formik';
 import {addDoc, collection} from 'firebase/firestore';
 import {db} from '../../firebase';
 import NavigationOptions from '../components/utils/NavigationOptions';
-import { Account } from '../interfaces/models/account';
+import {Account} from '../interfaces/models/account';
+import {useAccount} from '../api/account';
 
 function _Account({route}: {route: RouteProp<RouteParamList, 'Account'>}) {
   const params = route.params;
   const navigation = useNavigation();
-  const accountCollection = collection(db, 'accounts');
+  const {accountCollection} = useAccount();
 
   const EditMode = !!params;
 
@@ -46,11 +44,11 @@ function _Account({route}: {route: RouteProp<RouteParamList, 'Account'>}) {
                 ),
               }}
             />
-              <TextInput
-                value={values.name}
-                onChangeText={text => setFieldValue('name', text)}
-                label={'Name'}
-              />
+            <TextInput
+              value={values.name}
+              onChangeText={text => setFieldValue('name', text)}
+              label={'Name'}
+            />
           </>
         )}
       </Formik>
